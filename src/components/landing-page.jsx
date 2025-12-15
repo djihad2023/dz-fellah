@@ -9,13 +9,13 @@ import tomatoesImage from "../assets/tomatoes.png";
 import potatoesImage from "../assets/potatoes.png";
 import orangesImage from "../assets/oranges.png";
 import vegetablesBgImage from "../assets/vegetables-bg.png";
-import logoImage from "../assets/logo-dzfellah.png";
+import logoImage from "../assets/logo-dzfellah1.png";
 import decor1 from "../assets/decoration.png";
 import decor2 from "../assets/decoration2.png";
 import decor3 from "../assets/decoration3.png";
 import decor4 from "../assets/decoration4.png";
 
-export default function LandingPage({ onNavigateToLogin, onNavigateToSignup }) {
+export default function LandingPage({ onNavigateToLogin, onNavigateToSignup, onNavigateToProducts, onNavigateToStores }) {
   const [currentProductIndex, setCurrentProductIndex] = useState(0);
 
   const products = [
@@ -67,15 +67,15 @@ export default function LandingPage({ onNavigateToLogin, onNavigateToSignup }) {
       <nav className="bg-white border-b border-gray-200 px-6 lg:px-16 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <img src={logoImage} alt="FELLAH" className="h-8 w-auto" />
+            <img src={logoImage} alt="FELLAH" className="h-12 w-auto" />
           </div>
           
           <div className="hidden md:flex items-center gap-8">
             <a href="#home" className="text-gray-700 hover:text-[#285153] font-medium">Home</a>
             <a href="#about" className="text-gray-700 hover:text-[#285153] font-medium">About</a>
             <a href="#contact" className="text-gray-700 hover:text-[#285153] font-medium">Contact</a>
-            <a href="#products" className="text-gray-700 hover:text-[#285153] font-medium">Products</a>
-            <a href="#stores" className="text-gray-700 hover:text-[#285153] font-medium">Stores</a>
+            <a href="#projects" className="text-gray-700 hover:text-[#285153] font-medium" onClick={(e) => { e.preventDefault(); onNavigateToProducts(); }}>Products</a>
+            <a href="#stores" className="text-gray-700 hover:text-[#285153] font-medium" onClick={(e) => { e.preventDefault(); onNavigateToStores(); }}>Stores</a>
             <button 
               onClick={onNavigateToLogin}
               className="text-gray-700 hover:text-[#285153] font-medium"

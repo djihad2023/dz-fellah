@@ -2,11 +2,15 @@ import { useState } from "react";
 import LoginForm from "./components/login-form";
 import SignupForm from "./components/signup-form";
 import SignupSecondaryForm from "./components/signup-secondary-form";
+import ProductsPage from "./components/products-page";
+import StoresPage from "./components/stores-page";
 import LandingPage from "./components/landing-page";
+
+// Assets
 import logoImage from "./assets/logo-dzfellah.png";
 
 export default function Home() {
-  const [currentPage, setCurrentPage] = useState("landing"); // "landing", "login", "signup", "signup-secondary"
+  const [currentPage, setCurrentPage] = useState("landing"); // "landing", "products", "login", "signup", "signup-secondary"
   const [userType, setUserType] = useState("consumer");
 
   // eslint-disable-next-line no-unused-vars
@@ -24,6 +28,32 @@ export default function Home() {
       <LandingPage
         onNavigateToLogin={() => setCurrentPage("login")}
         onNavigateToSignup={() => setCurrentPage("signup")}
+        onNavigateToProducts={() => setCurrentPage("products")}
+        onNavigateToStores={() => setCurrentPage("stores")}
+      />
+    );
+  }
+
+  // If on products page, show products page
+  if (currentPage === "products") {
+    return (
+      <ProductsPage
+        onNavigateToHome={() => setCurrentPage("landing")}
+        onNavigateToLogin={() => setCurrentPage("login")}
+        onNavigateToSignup={() => setCurrentPage("signup")}
+        onNavigateToStores={() => setCurrentPage("stores")}
+      />
+    );
+  }
+
+  // If on stores page, show stores page
+  if (currentPage === "stores") {
+    return (
+      <StoresPage
+        onNavigateToHome={() => setCurrentPage("landing")}
+        onNavigateToLogin={() => setCurrentPage("login")}
+        onNavigateToSignup={() => setCurrentPage("signup")}
+        onNavigateToProducts={() => setCurrentPage("products")}
       />
     );
   }
