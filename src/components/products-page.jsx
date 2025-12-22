@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Search, ChevronLeft, ChevronRight, MapPin, Globe, Mail, Clock } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, MapPin, Globe, Mail, Clock, Plus } from "lucide-react";
 import ProductDetailModal from "./product-detail-modal";
+import AddProductModal from "./add-product-modal";
 
 // Assets
 import logoImage from "../assets/logo-dzfellah.png";
@@ -28,6 +29,7 @@ import fromageImage from "../assets/fromage.png";
 
 export default function ProductsPage({ onNavigateToHome, onNavigateToLogin, onNavigateToSignup, onNavigateToStores }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [showAddProduct, setShowAddProduct] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [currentStoreIndex, setCurrentStoreIndex] = useState(0);
@@ -225,7 +227,7 @@ export default function ProductsPage({ onNavigateToHome, onNavigateToLogin, onNa
                 <i className="fab fa-linkedin text-xl"></i>
               </div>
 
-              <div className="relative max-w-md">
+              <div className="relative max-w-md mb-6">
                 <input
                   type="text"
                   placeholder="search for a Product"
@@ -235,6 +237,15 @@ export default function ProductsPage({ onNavigateToHome, onNavigateToLogin, onNa
                 />
                 <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
               </div>
+
+              {/* Demo Add Product Button */}
+               <button 
+                  onClick={() => setShowAddProduct(true)}
+                  className="bg-[#285153] text-white px-6 py-3 rounded-full font-semibold hover:bg-[#1f4042] transition-colors flex items-center gap-2"
+                >
+                  <Plus className="w-5 h-5" />
+                  Add New Product
+                </button>
             </div>
           </div>
         </div>
@@ -488,6 +499,14 @@ export default function ProductsPage({ onNavigateToHome, onNavigateToLogin, onNa
         <ProductDetailModal 
           product={selectedProduct} 
           onClose={() => setSelectedProduct(null)} 
+        />
+      )}
+
+      {/* Add Product Modal */}
+      {showAddProduct && (
+        <AddProductModal 
+            onClose={() => setShowAddProduct(false)}
+            onProductAdded={(newProduct) => console.log("New Product Added:", newProduct)}
         />
       )}
     </div>

@@ -55,23 +55,18 @@ const WILAYAS = [
 ];
 
 export default function SignupForm({
-  onBackToLogin,
-  onSignupComplete,
-  onUserTypeChange,
+  setGlobalSignupData,
+  initialData,
 }) {
-  const [userType, setUserType] = useState("consumer");
+  const [userType, setUserType] = useState(initialData?.user_type === "producer" ? "producer" : "consumer");
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    producerName: "",
-    email: "",
-    phone: "",
-    password: "",
-    confirmPassword: "",
-    address: "",
-    wilaya: "",
-    description: "",
-    isBioCertified: false,
+    first_name: initialData?.first_name || "",
+    last_name: initialData?.last_name || "",
+    producer_name: initialData?.shop_name || "", // Mapping shop_name to producer input for now, will clarify
+    email: initialData?.email || "",
+    phone: initialData?.phone || "",
+    password: "", // Don't persist password for security/simplicity in this demo, or can
+    confirm_password: "",
   });
   const [loading, setLoading] = useState(false);
   const [passwordError, setPasswordError] = useState("");
@@ -82,39 +77,32 @@ export default function SignupForm({
     // Reset name fields when switching types
     setFormData((prev) => ({
       ...prev,
-      firstName: "",
-      lastName: "",
-      producerName: "",
+      first_name: "",
+      last_name: "",
+      producer_name: "",
     }));
   };
 
   const handleChange = (e) => {
-    const { name, type, value } = e.target;
+    const { name, value } = e.target;
     setPasswordError("");
-    if (type === "checkbox") {
-      setFormData((prev) => ({
+    setFormData((prev) => {
+      const newData = {
         ...prev,
-        [name]: e.target.checked,
-      }));
-    } else {
-      setFormData((prev) => {
-        const newData = {
-          ...prev,
-          [name]: value,
-        };
-        // Clear password error if passwords match while typing
-        if (name === "password" || name === "confirmPassword") {
-          if (
-            newData.password &&
-            newData.confirmPassword &&
-            newData.password === newData.confirmPassword
-          ) {
-            setPasswordError("");
-          }
+        [name]: value,
+      };
+      // Clear password error if passwords match while typing
+      if (name === "password" || name === "confirm_password") {
+        if (
+          newData.password &&
+          newData.confirm_password &&
+          newData.password === newData.confirm_password
+        ) {
+          setPasswordError("");
         }
-        return newData;
-      });
-    }
+      }
+      return newData;
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -122,7 +110,7 @@ export default function SignupForm({
 
     // Trim passwords to remove any whitespace
     const password = formData.password.trim();
-    const confirmPassword = formData.confirmPassword.trim();
+    const confirmPassword = formData.confirm_password?.trim();
 
     // Validate passwords
     if (!password) {
@@ -140,12 +128,12 @@ export default function SignupForm({
 
     // Validate required fields
     if (userType === "consumer") {
-      if (!formData.firstName || !formData.lastName || !formData.email) {
+      if (!formData.first_name || !formData.last_name || !formData.email) {
         alert("Please fill in all required fields");
         return;
       }
     } else {
-      if (!formData.producerName || !formData.email) {
+      if (!formData.producer_name || !formData.email) {
         alert("Please fill in all required fields");
         return;
       }
@@ -154,7 +142,15 @@ export default function SignupForm({
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      onSignupComplete(formData);
+      // Prepare data for next step
+      const stepOneData = {
+        ...formData,
+        user_type: userType,
+        // map producer_name to shop_name for backend consistency if producer
+        shop_name: userType === 'producer' ? formData.producer_name : undefined
+      };
+      setGlobalSignupData(stepOneData);
+      onSignupComplete(stepOneData);
     }, 1000);
   };
 
@@ -230,9 +226,9 @@ export default function SignupForm({
               <User className="absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-600 w-5 h-5" />
               <input
                 type="text"
-                name="firstName"
+                name="first_name"
                 placeholder="first name"
-                value={formData.firstName}
+                value={formData.first_name}
                 onChange={handleChange}
                 required
                 className="w-full pl-14 pr-6 py-4 bg-[#E0E0E0] text-gray-900 placeholder-gray-500 rounded-xl border-none focus:outline-none focus:ring-2 focus:ring-[#285153]"
@@ -242,9 +238,9 @@ export default function SignupForm({
               <User className="absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-600 w-5 h-5" />
               <input
                 type="text"
-                name="lastName"
+                name="last_name"
                 placeholder="Familly name"
-                value={formData.lastName}
+                value={formData.last_name}
                 onChange={handleChange}
                 required
                 className="w-full pl-14 pr-6 py-4 bg-[#E0E0E0] text-gray-900 placeholder-gray-500 rounded-xl border-none focus:outline-none focus:ring-2 focus:ring-[#285153]"
@@ -259,9 +255,9 @@ export default function SignupForm({
             <User className="absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-600 w-5 h-5" />
             <input
               type="text"
-              name="producerName"
-              placeholder="Producer name"
-              value={formData.producerName}
+              name="producer_name"
+              placeholder="Shop Name" 
+              value={formData.producer_name}
               onChange={handleChange}
               required
               className="w-full pl-14 pr-6 py-4 bg-[#E0E0E0] text-gray-900 placeholder-gray-500 rounded-xl border-none focus:outline-none focus:ring-2 focus:ring-[#285153]"
@@ -302,9 +298,9 @@ export default function SignupForm({
           <Lock className="absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-600 w-5 h-5" />
           <input
             type="password"
-            name="confirmPassword"
+            name="confirm_password"
             placeholder="confirm password"
-            value={formData.confirmPassword}
+            value={formData.confirm_password}
             onChange={handleChange}
             required
             className="w-full pl-14 pr-6 py-4 bg-[#E0E0E0] text-gray-900 placeholder-gray-500 rounded-xl border-none focus:outline-none focus:ring-2 focus:ring-[#285153]"
