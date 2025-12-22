@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Search, ChevronLeft, ChevronRight, MapPin, Globe, Mail, Clock, Plus } from "lucide-react";
+import { motion } from "framer-motion";
+import { Search, ChevronLeft, ChevronRight, MapPin, Globe, Mail, Clock } from "lucide-react";
 import ProductDetailModal from "./product-detail-modal";
-import AddProductModal from "./add-product-modal";
 
 // Assets
 import logoImage from "../assets/logo-dzfellah.png";
@@ -29,7 +29,6 @@ import fromageImage from "../assets/fromage.png";
 
 export default function ProductsPage({ onNavigateToHome, onNavigateToLogin, onNavigateToSignup, onNavigateToStores }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [showAddProduct, setShowAddProduct] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [currentStoreIndex, setCurrentStoreIndex] = useState(0);
@@ -201,17 +200,30 @@ export default function ProductsPage({ onNavigateToHome, onNavigateToLogin, onNa
       <section className="bg-[#eff3f3] relative overflow-hidden py-12 lg:py-20">
         <div className="max-w-7xl mx-auto px-6 lg:px-16">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-             <div className="relative">
+             <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8 }}
+              className="relative"
+            >
               <img 
                 src={farmerImage} 
                 alt="Farmer showing products" 
                 className="w-full max-w-md mx-auto rounded-3xl z-10 relative"
               />
-              <img src={decor2} alt="" className="absolute top-0 left-0 w-24 h-24 -translate-x-1/2 -translate-y-1/2" />
+              <motion.img 
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                src={decor2} alt="" className="absolute top-0 left-0 w-24 h-24 -translate-x-1/2 -translate-y-1/2" 
+              />
               <img src={leafImage} alt="" className="absolute bottom-0 right-0 w-32 h-32 translate-x-1/4 translate-y-1/4 opacity-50" />
-            </div>
+            </motion.div>
 
-            <div>
+            <motion.div 
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+            >
               <h1 className="text-5xl lg:text-6xl font-bold text-[#285153] mb-4">
                 Discover our products
               </h1>
@@ -227,7 +239,7 @@ export default function ProductsPage({ onNavigateToHome, onNavigateToLogin, onNa
                 <i className="fab fa-linkedin text-xl"></i>
               </div>
 
-              <div className="relative max-w-md mb-6">
+              <div className="relative max-w-md">
                 <input
                   type="text"
                   placeholder="search for a Product"
@@ -237,16 +249,7 @@ export default function ProductsPage({ onNavigateToHome, onNavigateToLogin, onNa
                 />
                 <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
               </div>
-
-              {/* Demo Add Product Button */}
-               <button 
-                  onClick={() => setShowAddProduct(true)}
-                  className="bg-[#285153] text-white px-6 py-3 rounded-full font-semibold hover:bg-[#1f4042] transition-colors flex items-center gap-2"
-                >
-                  <Plus className="w-5 h-5" />
-                  Add New Product
-                </button>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -274,8 +277,16 @@ export default function ProductsPage({ onNavigateToHome, onNavigateToLogin, onNa
       <section className="bg-[#3e5f60] pb-20 pt-10 px-6 lg:px-16">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {products.map((product) => (
-              <div key={product.id} className="bg-white rounded-3xl p-4 shadow-lg hover:shadow-xl transition-shadow">
+            {products.map((product, index) => (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.05 }}
+                whileHover={{ y: -10 }}
+                key={product.id} 
+                className="bg-white rounded-3xl p-4 shadow-lg hover:shadow-xl transition-shadow"
+              >
                 <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-4 relative">
                   <img 
                     src={product.image} 
@@ -288,15 +299,17 @@ export default function ProductsPage({ onNavigateToHome, onNavigateToLogin, onNa
                   <p className="text-xs text-gray-500 font-semibold mb-2">{product.farm}</p>
                   <div className="flex justify-between items-center mt-4">
                     <p className="text-[#8B7355] text-sm font-medium">price :{product.price}</p>
-                    <button 
+                    <motion.button 
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                       onClick={() => setSelectedProduct(product)}
                       className="bg-[#4A6768] text-white text-xs px-4 py-1.5 rounded bg-opacity-90 hover:bg-opacity-100 transition-colors"
                     >
                       See details
-                    </button>
+                    </motion.button>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
 
@@ -337,7 +350,15 @@ export default function ProductsPage({ onNavigateToHome, onNavigateToLogin, onNa
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {getVisibleStores().map((store, index) => (
-                <div key={`${store.id}-${index}`} className="relative h-80 rounded-3xl overflow-hidden group cursor-pointer hover:shadow-xl transition-all">
+                <motion.div 
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  whileHover={{ scale: 1.02 }}
+                  key={`${store.id}-${index}`} 
+                  className="relative h-80 rounded-3xl overflow-hidden group cursor-pointer hover:shadow-xl transition-all"
+                >
                   {/* Background Image */}
                   <img 
                     src={store.image} 
@@ -372,7 +393,7 @@ export default function ProductsPage({ onNavigateToHome, onNavigateToLogin, onNa
                        </button>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -397,7 +418,12 @@ export default function ProductsPage({ onNavigateToHome, onNavigateToLogin, onNa
 
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Contact Form */}
-            <div>
+            <motion.div
+               initial={{ opacity: 0, x: -30 }}
+               whileInView={{ opacity: 1, x: 0 }}
+               viewport={{ once: true }}
+               transition={{ duration: 0.8 }}
+            >
               <h3 className="text-2xl font-bold text-white mb-6">Get in touch with us</h3>
               <form className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
@@ -422,17 +448,24 @@ export default function ProductsPage({ onNavigateToHome, onNavigateToLogin, onNa
                   rows="4"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#285153] text-gray-800"
                 ></textarea>
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   type="submit"
                   className="w-full bg-white hover:bg-gray-100 text-[#285153] py-3 rounded-full font-bold transition-colors"
                 >
                   Submit
-                </button>
+                </motion.button>
               </form>
-            </div>
+            </motion.div>
 
             {/* Contact Info */}
-            <div>
+            <motion.div
+               initial={{ opacity: 0, x: 30 }}
+               whileInView={{ opacity: 1, x: 0 }}
+               viewport={{ once: true }}
+               transition={{ duration: 0.8 }}
+            >
               <h3 className="text-2xl font-bold text-white mb-6">Get in touch with us</h3>
               <p className="text-gray-200 mb-8">
                 If you have any questions at all, we're here to help! Our friendly team is ready 
@@ -472,7 +505,7 @@ export default function ProductsPage({ onNavigateToHome, onNavigateToLogin, onNa
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -499,14 +532,6 @@ export default function ProductsPage({ onNavigateToHome, onNavigateToLogin, onNa
         <ProductDetailModal 
           product={selectedProduct} 
           onClose={() => setSelectedProduct(null)} 
-        />
-      )}
-
-      {/* Add Product Modal */}
-      {showAddProduct && (
-        <AddProductModal 
-            onClose={() => setShowAddProduct(false)}
-            onProductAdded={(newProduct) => console.log("New Product Added:", newProduct)}
         />
       )}
     </div>

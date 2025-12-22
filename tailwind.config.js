@@ -1,5 +1,3 @@
-import animatePlugin from 'tw-animate-css';
-
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -42,7 +40,7 @@ export default {
     },
   },
   plugins: [
-    animatePlugin
+    require('tw-animate-css'),
   ],
 }
 

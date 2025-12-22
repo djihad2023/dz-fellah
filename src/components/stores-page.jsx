@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { Search, ChevronLeft, ChevronRight, MapPin, Globe, Mail, Clock, ArrowLeft } from "lucide-react";
 import ProductDetailModal from "./product-detail-modal";
 
@@ -137,7 +138,12 @@ export default function StoresPage({ onNavigateToHome, onNavigateToLogin, onNavi
 
           {/* Info Card */}
           <div className="max-w-4xl mx-auto relative px-6">
-            <div className="bg-white rounded-3xl shadow-xl p-8 -mt-24 relative z-10">
+            <motion.div 
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="bg-white rounded-3xl shadow-xl p-8 -mt-24 relative z-10"
+            >
               <h1 className="text-3xl font-bold text-[#285153] mb-4">{selectedStore.name}</h1>
               
               <div className="flex items-start gap-4 mb-4">
@@ -162,7 +168,7 @@ export default function StoresPage({ onNavigateToHome, onNavigateToLogin, onNavi
                   ullamco laboris nisi ut aliquip ex ea commodo con
                 </p>
               </div>
-            </div>
+            </motion.div>
           </div>
 
            {/* Products Grid */}
@@ -173,8 +179,15 @@ export default function StoresPage({ onNavigateToHome, onNavigateToLogin, onNavi
               </h2>
               
                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {storeProducts.map((product) => (
-                  <div key={product.id} className="bg-[#3e5f60] rounded-3xl p-4 shadow-lg hover:shadow-xl transition-shadow">
+                {storeProducts.map((product, index) => (
+                  <motion.div 
+                    key={product.id} 
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.05 }}
+                    className="bg-[#3e5f60] rounded-3xl p-4 shadow-lg hover:shadow-xl transition-shadow"
+                  >
                     <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-4 relative">
                       <img 
                         src={product.image} 
@@ -187,14 +200,16 @@ export default function StoresPage({ onNavigateToHome, onNavigateToLogin, onNavi
                       <p className="text-xs opacity-80 mb-2">{product.farm}</p>
                       <div className="flex justify-between items-center mt-4">
                         <p className="text-white text-sm font-medium">price :{product.price}</p>
-                        <button 
+                        <motion.button 
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
                           onClick={() => setSelectedProduct(product)}
                           className="bg-white text-[#285153] h-2 w-8 rounded-full hover:bg-gray-100 transition-colors"
                         >
-                        </button>
+                        </motion.button>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
 
@@ -217,13 +232,23 @@ export default function StoresPage({ onNavigateToHome, onNavigateToLogin, onNavi
         <div>
            {/* Hero / Search */}
            <div className="bg-white py-12 text-center px-6">
-              <h1 className="text-3xl lg:text-4xl font-bold text-[#285153] mb-8">
+              <motion.h1 
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className="text-3xl lg:text-4xl font-bold text-[#285153] mb-8"
+              >
                 Find Your Local Farm and Fresh
                 <br />
                 Products Easily
-              </h1>
+              </motion.h1>
 
-              <div className="relative max-w-xl mx-auto">
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="relative max-w-xl mx-auto"
+              >
                 <input
                   type="text"
                   placeholder="search for a Product"
@@ -231,18 +256,23 @@ export default function StoresPage({ onNavigateToHome, onNavigateToLogin, onNavi
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-              </div>
+              </motion.div>
            </div>
 
            {/* Stores Grid */}
            <div className="bg-[#3e5f60] py-16 px-6 lg:px-16 min-h-[600px]">
               <div className="max-w-7xl mx-auto">
                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {stores.map((store) => (
-                       <div 
+                    {stores.map((store, index) => (
+                       <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: index * 0.05 }}
+                        whileHover={{ scale: 1.02 }}
                         key={store.id} 
                         onClick={() => setSelectedStore(store)}
-                        className="bg-white rounded-2xl overflow-hidden cursor-pointer hover:shadow-xl transition-all hover:scale-[1.02]"
+                        className="bg-white rounded-2xl overflow-hidden cursor-pointer hover:shadow-xl transition-all"
                        >
                           <div className="h-48 w-full">
                              <img src={store.image} alt={store.name} className="w-full h-full object-cover" />
@@ -254,10 +284,10 @@ export default function StoresPage({ onNavigateToHome, onNavigateToLogin, onNavi
                              </div>
                              <div>
                                 <p className="text-xs font-semibold text-gray-800 mb-1">{store.farmerName}</p>
-                                <p className="text-[10px] text-gray-500">product types : {store.products}</p>
+                                <p className="text--[10px] text-gray-500">product types : {store.products}</p>
                              </div>
                           </div>
-                       </div>
+                       </motion.div>
                     ))}
                  </div>
 
@@ -298,7 +328,15 @@ export default function StoresPage({ onNavigateToHome, onNavigateToLogin, onNavi
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {getVisibleProducts().map((product, index) => (
-                <div key={`${product.id}-${index}`} className="bg-white rounded-3xl p-4 shadow-lg hover:shadow-xl transition-shadow">
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  whileHover={{ y: -10 }}
+                  key={`${product.id}-${index}`} 
+                  className="bg-white rounded-3xl p-4 shadow-lg hover:shadow-xl transition-shadow"
+                >
                   <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-4 relative">
                     <img 
                       src={product.image} 
@@ -311,15 +349,17 @@ export default function StoresPage({ onNavigateToHome, onNavigateToLogin, onNavi
                     <p className="text-xs text-black font-semibold mb-2">{product.farm}</p>
                     <div className="flex justify-between items-center mt-4">
                       <p className="text-[#8B7355] text-sm font-medium">price :{product.price}</p>
-                      <button 
+                      <motion.button 
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                         onClick={() => setSelectedProduct(product)}
                         className="bg-[#3e5f60] text-white text-xs px-4 py-1.5 rounded bg-opacity-90 hover:bg-opacity-100 transition-colors"
                       >
                         See details
-                      </button>
+                      </motion.button>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -344,7 +384,12 @@ export default function StoresPage({ onNavigateToHome, onNavigateToLogin, onNavi
 
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Contact Form */}
-            <div>
+            <motion.div
+               initial={{ opacity: 0, x: -30 }}
+               whileInView={{ opacity: 1, x: 0 }}
+               viewport={{ once: true }}
+               transition={{ duration: 0.8 }}
+            >
               <h3 className="text-2xl font-bold text-white mb-6">Get in touch with us</h3>
               <form className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
@@ -369,17 +414,24 @@ export default function StoresPage({ onNavigateToHome, onNavigateToLogin, onNavi
                   rows="4"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#285153]"
                 ></textarea>
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   type="submit"
                   className="w-full bg-white hover:bg-gray-100 text-[#285153] py-3 rounded-full font-bold transition-colors"
                 >
                   Submit
-                </button>
+                </motion.button>
               </form>
-            </div>
+            </motion.div>
 
             {/* Contact Info */}
-            <div>
+            <motion.div
+               initial={{ opacity: 0, x: 30 }}
+               whileInView={{ opacity: 1, x: 0 }}
+               viewport={{ once: true }}
+               transition={{ duration: 0.8 }}
+            >
               <h3 className="text-2xl font-bold text-white mb-6">Get in touch with us</h3>
               <p className="text-gray-200 mb-8">
                 If you have any questions at all, we're here to help! Our friendly team is ready 
@@ -419,7 +471,7 @@ export default function StoresPage({ onNavigateToHome, onNavigateToLogin, onNavi
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>

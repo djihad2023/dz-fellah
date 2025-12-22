@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { Mail, Lock, User } from "lucide-react";
 
 const WILAYAS = [
@@ -55,18 +56,23 @@ const WILAYAS = [
 ];
 
 export default function SignupForm({
-  setGlobalSignupData,
-  initialData,
+  onBackToLogin,
+  onSignupComplete,
+  onUserTypeChange,
 }) {
-  const [userType, setUserType] = useState(initialData?.user_type === "producer" ? "producer" : "consumer");
+  const [userType, setUserType] = useState("consumer");
   const [formData, setFormData] = useState({
-    first_name: initialData?.first_name || "",
-    last_name: initialData?.last_name || "",
-    producer_name: initialData?.shop_name || "", // Mapping shop_name to producer input for now, will clarify
-    email: initialData?.email || "",
-    phone: initialData?.phone || "",
-    password: "", // Don't persist password for security/simplicity in this demo, or can
-    confirm_password: "",
+    firstName: "",
+    lastName: "",
+    producerName: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+    address: "",
+    wilaya: "",
+    description: "",
+    isBioCertified: false,
   });
   const [loading, setLoading] = useState(false);
   const [passwordError, setPasswordError] = useState("");
@@ -77,32 +83,39 @@ export default function SignupForm({
     // Reset name fields when switching types
     setFormData((prev) => ({
       ...prev,
-      first_name: "",
-      last_name: "",
-      producer_name: "",
+      firstName: "",
+      lastName: "",
+      producerName: "",
     }));
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, type, value } = e.target;
     setPasswordError("");
-    setFormData((prev) => {
-      const newData = {
+    if (type === "checkbox") {
+      setFormData((prev) => ({
         ...prev,
-        [name]: value,
-      };
-      // Clear password error if passwords match while typing
-      if (name === "password" || name === "confirm_password") {
-        if (
-          newData.password &&
-          newData.confirm_password &&
-          newData.password === newData.confirm_password
-        ) {
-          setPasswordError("");
+        [name]: e.target.checked,
+      }));
+    } else {
+      setFormData((prev) => {
+        const newData = {
+          ...prev,
+          [name]: value,
+        };
+        // Clear password error if passwords match while typing
+        if (name === "password" || name === "confirmPassword") {
+          if (
+            newData.password &&
+            newData.confirmPassword &&
+            newData.password === newData.confirmPassword
+          ) {
+            setPasswordError("");
+          }
         }
-      }
-      return newData;
-    });
+        return newData;
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -110,7 +123,7 @@ export default function SignupForm({
 
     // Trim passwords to remove any whitespace
     const password = formData.password.trim();
-    const confirmPassword = formData.confirm_password?.trim();
+    const confirmPassword = formData.confirmPassword.trim();
 
     // Validate passwords
     if (!password) {
@@ -128,12 +141,12 @@ export default function SignupForm({
 
     // Validate required fields
     if (userType === "consumer") {
-      if (!formData.first_name || !formData.last_name || !formData.email) {
+      if (!formData.firstName || !formData.lastName || !formData.email) {
         alert("Please fill in all required fields");
         return;
       }
     } else {
-      if (!formData.producer_name || !formData.email) {
+      if (!formData.producerName || !formData.email) {
         alert("Please fill in all required fields");
         return;
       }
@@ -142,20 +155,17 @@ export default function SignupForm({
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      // Prepare data for next step
-      const stepOneData = {
-        ...formData,
-        user_type: userType,
-        // map producer_name to shop_name for backend consistency if producer
-        shop_name: userType === 'producer' ? formData.producer_name : undefined
-      };
-      setGlobalSignupData(stepOneData);
-      onSignupComplete(stepOneData);
+      onSignupComplete(formData);
     }, 1000);
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <motion.div 
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="w-full max-w-md mx-auto"
+    >
       {/* Heading */}
       <div className="mb-8 text-center">
         <h1 className="text-5xl font-bold text-[#285153] mb-3 font-sans">
@@ -226,9 +236,9 @@ export default function SignupForm({
               <User className="absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-600 w-5 h-5" />
               <input
                 type="text"
-                name="first_name"
+                name="firstName"
                 placeholder="first name"
-                value={formData.first_name}
+                value={formData.firstName}
                 onChange={handleChange}
                 required
                 className="w-full pl-14 pr-6 py-4 bg-[#E0E0E0] text-gray-900 placeholder-gray-500 rounded-xl border-none focus:outline-none focus:ring-2 focus:ring-[#285153]"
@@ -238,9 +248,9 @@ export default function SignupForm({
               <User className="absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-600 w-5 h-5" />
               <input
                 type="text"
-                name="last_name"
+                name="lastName"
                 placeholder="Familly name"
-                value={formData.last_name}
+                value={formData.lastName}
                 onChange={handleChange}
                 required
                 className="w-full pl-14 pr-6 py-4 bg-[#E0E0E0] text-gray-900 placeholder-gray-500 rounded-xl border-none focus:outline-none focus:ring-2 focus:ring-[#285153]"
@@ -255,9 +265,9 @@ export default function SignupForm({
             <User className="absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-600 w-5 h-5" />
             <input
               type="text"
-              name="producer_name"
-              placeholder="Shop Name" 
-              value={formData.producer_name}
+              name="producerName"
+              placeholder="Producer name"
+              value={formData.producerName}
               onChange={handleChange}
               required
               className="w-full pl-14 pr-6 py-4 bg-[#E0E0E0] text-gray-900 placeholder-gray-500 rounded-xl border-none focus:outline-none focus:ring-2 focus:ring-[#285153]"
@@ -298,9 +308,9 @@ export default function SignupForm({
           <Lock className="absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-600 w-5 h-5" />
           <input
             type="password"
-            name="confirm_password"
+            name="confirmPassword"
             placeholder="confirm password"
-            value={formData.confirm_password}
+            value={formData.confirmPassword}
             onChange={handleChange}
             required
             className="w-full pl-14 pr-6 py-4 bg-[#E0E0E0] text-gray-900 placeholder-gray-500 rounded-xl border-none focus:outline-none focus:ring-2 focus:ring-[#285153]"
@@ -347,6 +357,6 @@ export default function SignupForm({
           </button>
         </p>
       </div>
-    </div>
+    </motion.div>
   );
 }

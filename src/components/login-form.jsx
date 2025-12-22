@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { Mail, Lock } from "lucide-react";
 
 export default function LoginForm({ onSignupClick }) {
@@ -17,7 +18,12 @@ export default function LoginForm({ onSignupClick }) {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <motion.div 
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="w-full max-w-md mx-auto"
+    >
       {/* Heading */}
       <div className="mb-8 text-center">
         <h1 className="text-5xl font-bold text-[#285153] mb-3 font-sans">
@@ -142,6 +148,6 @@ export default function LoginForm({ onSignupClick }) {
           </a>
         </p>
       </div>
-    </div>
+    </motion.div>
   );
 }

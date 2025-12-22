@@ -81,8 +81,7 @@ function AuthLayout({ children, mode }) {
 
 export default function App() {
   const navigate = useNavigate();
-  const [userType, setUserType] = useState("consumer");
-  const [signupData, setSignupData] = useState({});
+  const [userType, setUserType] = useState("consumer"); // Keeping userType state global if needed by signup-secondary
 
   const handleSignupComplete = (data) => {
     navigate("/signup-secondary");
@@ -143,8 +142,6 @@ export default function App() {
               onBackToLogin={() => navigate("/login")}
               onSignupComplete={handleSignupComplete}
               onUserTypeChange={setUserType}
-              setGlobalSignupData={setSignupData}
-              initialData={signupData}
             />
           </AuthLayout>
         } 
@@ -156,7 +153,6 @@ export default function App() {
              <div className="w-full">
                <SignupSecondaryForm
                   userType={userType}
-                  initialData={signupData}
                   onComplete={handleSecondaryComplete}
                   onBackToLogin={() => navigate("/login")}
                 />
