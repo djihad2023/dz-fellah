@@ -26,6 +26,7 @@ export default function StoresPage({ onNavigateToHome, onNavigateToLogin, onNavi
   const [selectedStore, setSelectedStore] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentProductIndex, setCurrentProductIndex] = useState(0);
 
   const stores = [
     {
@@ -40,7 +41,7 @@ export default function StoresPage({ onNavigateToHome, onNavigateToLogin, onNavi
       id: 2,
       name: "boumerdas_lands",
       farmerName: "salah chawdar",
-      image: farmThumb1, // Using available thumbs as placeholders
+      image: farmThumb1, 
       avatar: farmerImage,
       products: "vegetables, fruits"
     },
@@ -63,35 +64,28 @@ export default function StoresPage({ onNavigateToHome, onNavigateToLogin, onNavi
 
   const storeProducts = [
     { id: 1, name: "zit zitoun", farm: "tizi_wezou_farm", price: "700Da/Liter", category: "Oils", image: oliveOilImage },
-    { id: 2, name: "zit zitoun", farm: "tizi_wezou_farm", price: "700Da/Liter", category: "Oils", image: oliveOilImage },
-    { id: 3, name: "zit zitoun", farm: "tizi_wezou_farm", price: "700Da/Liter", category: "Oils", image: oliveOilImage },
-    { id: 4, name: "zit zitoun", farm: "tizi_wezou_farm", price: "700Da/Liter", category: "Oils", image: oliveOilImage },
-    { id: 5, name: "zit zitoun", farm: "tizi_wezou_farm", price: "700Da/Liter", category: "Oils", image: oliveOilImage },
-    { id: 6, name: "zit zitoun", farm: "tizi_wezou_farm", price: "700Da/Liter", category: "Oils", image: oliveOilImage },
-    { id: 7, name: "zit zitoun", farm: "tizi_wezou_farm", price: "700Da/Liter", category: "Oils", image: oliveOilImage },
-    { id: 8, name: "zit zitoun", farm: "tizi_wezou_farm", price: "700Da/Liter", category: "Oils", image: oliveOilImage },
+    { id: 2, name: "toumatich", farm: "boumerdas_lands", price: "200Da/kg", category: "Vegetables", image: tomatoesImage },
+    { id: 3, name: "batata", farm: "setif_mezloug_farms", price: "700Da/Kg", category: "Vegetables", image: potatoesImage },
+    { id: 4, name: "Asel_nature", farm: "jijel_mountain_farm", price: "1500Da/jar", category: "Honey", image: honeyImage },
+    { id: 5, name: "deglet_nour", farm: "biskra_oases", price: "700Da/kg", category: "Dates", image: datesImage },
+    { id: 6, name: "moudarine", farm: "djnan_rezlane_orange", price: "150Da/kg", category: "Fruits", image: mandarinImage },
   ];
   
-  const seasonalOffers = [
-    {
-      id: 1,
-      dates: "21/03 -> 20/06",
-      title: "Al Baraka Farm is offering a new deal: buy more than 10 kg and get 1/4 of the total for free.",
-      image: orangesImage 
-    },
-    {
-      id: 2,
-      dates: "21/03 -> 20/06",
-      title: "Welcome to Malek Farms. We are offering a 70% discount for every 15 kg of bananas you buy from us.",
-      image: farmerImage 
-    },
-    {
-      id: 3,
-      dates: "21/03 -> 20/06",
-      title: "Welcome to Malek Farms. We are offering a special 70% discount for every 15 kg of fresh pork purchased today",
-      image: datesImage 
+  const nextProduct = () => {
+    setCurrentProductIndex((prev) => (prev + 1) % storeProducts.length);
+  };
+
+  const prevProduct = () => {
+    setCurrentProductIndex((prev) => (prev - 1 + storeProducts.length) % storeProducts.length);
+  };
+
+  const getVisibleProducts = () => {
+    const visible = [];
+    for (let i = 0; i < 3; i++) {
+      visible.push(storeProducts[(currentProductIndex + i) % storeProducts.length]);
     }
-  ];
+    return visible;
+  };
 
   return (
     <div className="min-h-screen bg-white font-sans">
@@ -279,49 +273,67 @@ export default function StoresPage({ onNavigateToHome, onNavigateToLogin, onNavi
               </div>
            </div>
            
-           {/* Seasonal Offers */}
-           <section className="py-16 lg:py-24 bg-white">
-             <div className="max-w-7xl mx-auto px-6 lg:px-16">
-               <h2 className="text-4xl lg:text-5xl font-bold text-[#285153] mb-12">
-                 Taste the Season
-               </h2>
+      {/* Available Products Section */}
+      <section className="py-16 lg:py-24 bg-[#3e5f60]">
+        <div className="max-w-7xl mx-auto px-6 lg:px-16">
+          <h2 className="text-4xl lg:text-5xl font-bold text-white text-center mb-12">
+            Available Products
+          </h2>
 
-               <div className="grid lg:grid-cols-2 gap-12">
-                 <div>
-                    <div className="relative rounded-3xl overflow-hidden h-[400px]">
-                       <img src={orangesImage} alt="Pomegranate" className="w-full h-full object-cover" /> 
-                       {/* Using existing product image as placeholder for big seasonal image - Pomegranate/Pumgranate */}
-                       
-                       <div className="mt-6">
-                         <p className="font-bold text-lg text-gray-800">21/03 → 20/06</p>
-                         <p className="font-bold text-gray-700 mt-2">
-                           Welcome to Malek Farms. We are offering a fresh pomegranate deal: buy 10 kg and get 25% off instantly.
-                         </p>
-                         <p className="font-bold text-black mt-2">Limited offer</p>
-                       </div>
+          <div className="relative">
+             {/* Navigation Arrows */}
+            <button
+              onClick={prevProduct}
+              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 lg:-translate-x-12 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 transition-colors z-10"
+            >
+              <ChevronLeft className="w-6 h-6 text-[#285153]" />
+            </button>
+
+            <button
+              onClick={nextProduct}
+              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 lg:translate-x-12 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 transition-colors z-10"
+            >
+              <ChevronRight className="w-6 h-6 text-[#285153]" />
+            </button>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {getVisibleProducts().map((product, index) => (
+                <div key={`${product.id}-${index}`} className="bg-white rounded-3xl p-4 shadow-lg hover:shadow-xl transition-shadow">
+                  <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-4 relative">
+                    <img 
+                      src={product.image} 
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="px-2">
+                    <h3 className="text-xl font-bold text-[#285153] mb-1">{product.name}</h3>
+                    <p className="text-xs text-black font-semibold mb-2">{product.farm}</p>
+                    <div className="flex justify-between items-center mt-4">
+                      <p className="text-[#8B7355] text-sm font-medium">price :{product.price}</p>
+                      <button 
+                        onClick={() => setSelectedProduct(product)}
+                        className="bg-[#3e5f60] text-white text-xs px-4 py-1.5 rounded bg-opacity-90 hover:bg-opacity-100 transition-colors"
+                      >
+                        See details
+                      </button>
                     </div>
-                 </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
-                 <div className="space-y-8">
-                   {seasonalOffers.map((offer) => (
-                     <div key={offer.id} className="flex gap-6 items-start">
-                       <img 
-                         src={offer.image} 
-                         alt="Offer" 
-                         className="w-32 h-32 rounded-2xl object-cover flex-shrink-0"
-                       />
-                       <div>
-                         <p className="font-bold text-lg text-gray-800">{offer.dates}</p>
-                         <p className="text-sm font-semibold text-[#285153] mt-2">
-                           {offer.title}
-                         </p>
-                       </div>
-                     </div>
-                   ))}
-                 </div>
-               </div>
-             </div>
-           </section>
+          <div className="text-center mt-12">
+            <button 
+               onClick={onNavigateToProducts}
+               className="bg-white text-[#285153] px-8 py-3 rounded-full font-bold hover:bg-gray-100 transition-colors"
+            >
+              See more
+            </button>
+          </div>
+        </div>
+      </section>
  
        {/* Contact Section (Reused) */}
       <section id="contact" className="py-16 lg:py-24 bg-[#285153] border-t border-white/10">

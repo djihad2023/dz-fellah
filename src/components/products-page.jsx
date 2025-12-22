@@ -10,6 +10,10 @@ import decor1 from "../assets/decoration.png";
 import decor2 from "../assets/decoration2.png";
 import decor4 from "../assets/decoration4.png";
 
+// Store Images
+import farmThumb1 from "../assets/farm-thumb-1.png";
+import farmThumb2 from "../assets/farm-thumb-2.png";
+
 // Product Images
 import oliveOilImage from "../assets/olive-oil.png";
 import tomatoesImage from "../assets/tomatoes.png";
@@ -26,6 +30,7 @@ export default function ProductsPage({ onNavigateToHome, onNavigateToLogin, onNa
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [currentStoreIndex, setCurrentStoreIndex] = useState(0);
 
   const products = [
     {
@@ -40,7 +45,7 @@ export default function ProductsPage({ onNavigateToHome, onNavigateToLogin, onNa
     {
       id: 2,
       name: "toumatich",
-      farm: "boumerdes_lands",
+      farm: "boumerdas_lands",
       price: "200Da/kg",
       category: "Vegetables",
       image: tomatoesImage,
@@ -111,26 +116,51 @@ export default function ProductsPage({ onNavigateToHome, onNavigateToLogin, onNa
     },
   ];
 
-  const seasonalOffers = [
+  const stores = [
     {
       id: 1,
-      dates: "21/03 -> 20/06",
-      title: "Al Baraka Farm is offering a new deal: buy more than 10 kg and get 1/4 of the total for free.",
-      image: orangesImage // Placeholder
+      name: "tizi_wezou_farm",
+      farmerName: "taher miloudi",
+      image: farmThumb2,
+      avatar: farmThumb1,
+      products: "vegetables, oils"
     },
     {
       id: 2,
-      dates: "21/03 -> 20/06",
-      title: "Welcome to Malek Farms. We are offering a 70% discount for every 15 kg of bananas you buy from us.",
-      image: farmerImage // Placeholder
+      name: "boumerdas_lands",
+      farmerName: "salah chawdar",
+      image: farmThumb1,
+      avatar: farmerImage,
+      products: "vegetables, fruits"
     },
     {
       id: 3,
-      dates: "21/03 -> 20/06",
-      title: "Welcome to Malek Farms. We are offering a special 70% discount for every 15 kg of fresh pork purchased today",
-      image: datesImage // Placeholder
-    }
+      name: "tizi_wezou_farm",
+      farmerName: "moustafa farhan",
+      image: farmThumb2,
+      avatar: farmThumb1,
+      products: "vegetables, fruits"
+    },
+    // Adding duplicates for carousel testing
+    { id: 4, name: "tizi_wezou_farm", farmerName: "taher miloudi", image: farmThumb2, avatar: farmThumb1, products: "vegetables, oils" },
+    { id: 5, name: "boumerdas_lands", farmerName: "salah chawdar", image: farmThumb1, avatar: farmerImage, products: "vegetables, fruits" },
   ];
+
+  const nextStore = () => {
+    setCurrentStoreIndex((prev) => (prev + 1) % stores.length);
+  };
+
+  const prevStore = () => {
+    setCurrentStoreIndex((prev) => (prev - 1 + stores.length) % stores.length);
+  };
+
+  const getVisibleStores = () => {
+    const visible = [];
+    for (let i = 0; i < 3; i++) {
+      visible.push(stores[(currentStoreIndex + i) % stores.length]);
+    }
+    return visible;
+  };
 
   return (
     <div className="min-h-screen bg-white font-sans">
@@ -271,46 +301,78 @@ export default function ProductsPage({ onNavigateToHome, onNavigateToLogin, onNa
         </div>
       </section>
 
-      {/* Seasonal Offers */}
+      {/* Some of Our Stores Section */}
       <section className="py-16 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-16">
-          <h2 className="text-4xl lg:text-5xl font-bold text-[#285153] mb-12">
-            Taste the Season
+          <h2 className="text-4xl lg:text-5xl font-bold text-[#285153] text-center mb-12 uppercase">
+            SOME OF OUR STORES
           </h2>
 
-          <div className="grid lg:grid-cols-2 gap-12">
-            <div>
-               <div className="relative rounded-3xl overflow-hidden h-[400px]">
-                  <img src={products[0].image} alt="Pomegranate" className="w-full h-full object-cover" /> 
-                  {/* Using existing product image as placeholder for big seasonal image - Pomegranate/Pumgranate */}
-                  
-                  <div className="mt-6">
-                    <p className="font-bold text-lg text-gray-800">21/03 → 20/06</p>
-                    <p className="font-bold text-gray-700 mt-2">
-                      Welcome to Malek Farms. We are offering a fresh pomegranate deal: buy 10 kg and get 25% off instantly.
-                    </p>
-                    <p className="font-bold text-black mt-2">Limited offer</p>
-                  </div>
-               </div>
-            </div>
+          <div className="relative">
+             {/* Navigation Arrows */}
+            <button
+              onClick={prevStore}
+              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 lg:-translate-x-12 bg-[#3e5f60] rounded-full p-3 shadow-lg hover:bg-[#285153] transition-colors z-10"
+            >
+              <ChevronLeft className="w-6 h-6 text-white" />
+            </button>
 
-            <div className="space-y-8">
-              {seasonalOffers.map((offer) => (
-                <div key={offer.id} className="flex gap-6 items-start">
+            <button
+              onClick={nextStore}
+              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 lg:translate-x-12 bg-[#3e5f60] rounded-full p-3 shadow-lg hover:bg-[#285153] transition-colors z-10"
+            >
+              <ChevronRight className="w-6 h-6 text-white" />
+            </button>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {getVisibleStores().map((store, index) => (
+                <div key={`${store.id}-${index}`} className="relative h-80 rounded-3xl overflow-hidden group cursor-pointer hover:shadow-xl transition-all">
+                  {/* Background Image */}
                   <img 
-                    src={offer.image} 
-                    alt="Offer" 
-                    className="w-32 h-32 rounded-2xl object-cover flex-shrink-0"
+                    src={store.image} 
+                    alt={store.name} 
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
-                  <div>
-                    <p className="font-bold text-lg text-gray-800">{offer.dates}</p>
-                    <p className="text-sm font-semibold text-[#285153] mt-2">
-                      {offer.title}
-                    </p>
+                  
+                  {/* Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#285153]/90 via-[#285153]/40 to-transparent"></div>
+                  
+                  {/* Content */}
+                  <div className="absolute inset-x-0 bottom-0 p-6 flex flex-col justify-end h-full">
+                    <h3 className="text-xl font-bold text-white mb-2">{store.name}</h3>
+                    
+                    <div className="flex items-center gap-3 mb-3">
+                      <img 
+                        src={store.avatar} 
+                        alt={store.farmerName} 
+                        className="w-10 h-10 rounded-full object-cover border-2 border-white"
+                      />
+                      <span className="text-white text-sm font-medium">{store.farmerName}</span>
+                    </div>
+
+                    <div className="flex justify-between items-end">
+                       <div>
+                          <p className="text-xs text-gray-300 mb-0.5">products types:</p>
+                          <p className="text-xs font-semibold text-white">{store.products}</p>
+                       </div>
+                       
+                       <button className="bg-white text-[#285153] px-4 py-1.5 rounded-full text-xs font-bold hover:bg-gray-100 transition-colors">
+                         see more
+                       </button>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
+          </div>
+
+          <div className="text-center mt-12">
+            <button 
+              onClick={onNavigateToStores}
+              className="bg-[#3e5f60] text-white px-8 py-3 rounded-full font-bold hover:bg-[#285153] transition-colors"
+            >
+              See more
+            </button>
           </div>
         </div>
       </section>
