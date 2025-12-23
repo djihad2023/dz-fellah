@@ -4,7 +4,7 @@ import { Search, ChevronLeft, ChevronRight, MapPin, Globe, Mail, Clock } from "l
 import ProductDetailModal from "./product-detail-modal";
 
 // Assets
-import logoImage from "../assets/logo-dzfellah.png";
+import logoImage from "../assets/logo-dzfellah1.png";
 import farmerImage from "../assets/farmer.png"; // Placeholder for hero
 import leafImage from "../assets/leaf.png";
 import decor1 from "../assets/decoration.png";

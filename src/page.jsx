@@ -9,7 +9,7 @@ import LandingPage from "./components/landing-page";
 import NotFoundPage from "./components/not-found-page";
 
 // Assets
-import logoImage from "./assets/logo-dzfellah.png";
+import logoImage from "./assets/logo-dzfellah1.png";
 
 // Auth Layout Component to handle Sidebar and Split View
 function AuthLayout({ children, mode }) {
